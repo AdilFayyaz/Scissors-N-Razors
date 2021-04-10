@@ -21,10 +21,10 @@ class addCustomer extends StatelessWidget{
       appBar: AppBar(
         actions:[
           FlatButton(onPressed: (){
-            customerRef.add({
+            customerRef.doc(email.text).set({
               'First_Name': fname.text,
               'Last_Name': lname.text,
-              'Email': email.text,
+              //'Email': email.text,
               'Password': password.text,
               'Location': location.text,
               'Contact_Number': contact_num.text

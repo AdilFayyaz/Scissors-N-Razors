@@ -1,9 +1,10 @@
+import 'package:elasticcloud/addSalon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'addCustomer.dart';
-import 'getCustomer.dart';
+import 'addSalonOwner.dart';
+import 'getInformation.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,47 +56,58 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
- //final firestoreInstance = FirebaseFirestore.instance;
+  //final firestoreInstance = FirebaseFirestore.instance;
   TextEditingController email = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:Text(('Customer')),),
-      floatingActionButton: FloatingActionButton(child: Icon(Icons.add),
-        onPressed: (){
-        Navigator.push(context,MaterialPageRoute(builder: (_)=>addCustomer()));
-        },),
-      body: Center(child: Column(children: <Widget>[
-        Container(
-          margin: EdgeInsets.all(25),
-          child: FlatButton(
-            child: Text('SignUp', style: TextStyle(fontSize: 20.0),),
-            onPressed: () {
-              Navigator.push(context,MaterialPageRoute(builder: (_)=>addCustomer()));
-            },
+        appBar: AppBar(title:Text(('Salon')),),
+        floatingActionButton: FloatingActionButton(child: Icon(Icons.add),
+          onPressed: (){
+            Navigator.push(context,MaterialPageRoute(builder: (_)=>addSalonOwner()));
+          },),
+        body: Center(child: Column(children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(25),
+            child: FlatButton(
+              child: Text('SignUp', style: TextStyle(fontSize: 20.0),),
+              onPressed: () {
+                Navigator.push(context,MaterialPageRoute(builder: (_)=>addSalonOwner()));
+              },
+            ),
           ),
-        ),
-        Container(
-          decoration: BoxDecoration(border:Border.all()),
-          child: TextField(
-              controller: email,
-              decoration: InputDecoration(hintText: 'email')
+          Container(
+            decoration: BoxDecoration(border:Border.all()),
+            child: TextField(
+                controller: email,
+                decoration: InputDecoration(hintText: 'email')
+            ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.all(25),
-          child: FlatButton(
-            child: Text('getCustomerDetails', style: TextStyle(fontSize: 20.0),),
-            color: Colors.blueAccent,
-            textColor: Colors.white,
-            onPressed: () {
-              Navigator.push(context,MaterialPageRoute(builder: (_)=>getCustomer(email.text)));
-            },
+          Container(
+            margin: EdgeInsets.all(25),
+            child: FlatButton(
+              child: Text('getSalonOwnerDetails', style: TextStyle(fontSize: 20.0),),
+              color: Colors.blueAccent,
+              textColor: Colors.white,
+              onPressed: () {
+                Navigator.push(context,MaterialPageRoute(builder: (_)=>getSalonOwner(email.text)));
+              },
+            ),
           ),
+          Container(
+            margin: EdgeInsets.all(25),
+            child: FlatButton(
+              child: Text('Add Salon', style: TextStyle(fontSize: 20.0),),
+              color: Colors.blueAccent,
+              textColor: Colors.white,
+              onPressed: () {
+                Navigator.push(context,MaterialPageRoute(builder: (_)=>addSalon(email.text)));
+              },
+            ),
           ),
         ]
-      )
-      ));
+        )
+        ));
   }
 }
