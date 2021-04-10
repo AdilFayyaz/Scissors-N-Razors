@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "766615453961",
+    "firebase_url": "https://scissors-n-razors-default-rtdb.firebaseio.com",
+    "project_id": "scissors-n-razors",
+    "storage_bucket": "scissors-n-razors.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766615453961:android:69fca6e998b9290246d3d8",
+        "android_client_info": {
+          "package_name": "com.example.sw_engr_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "766615453961-t4b1o1rpghis6thpfasj1peqt2jqran4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8JeJi6blPzLW5_7e89Kwd-j3t5_IIY38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "766615453961-t4b1o1rpghis6thpfasj1peqt2jqran4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
