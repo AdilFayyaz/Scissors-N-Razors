@@ -2,12 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
+
+import 'package:date_format/date_format.dart';
+
 import 'package:location/location.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:elastic_client/console_http_transport.dart';
 import 'package:elastic_client/elastic_client.dart' as elastic;
 import 'package:http/http.dart' as http;
+import 'package:date_time_picker/date_time_picker.dart';
 
 final firestoreInstance = FirebaseFirestore.instance;
 Location location= new Location();
@@ -34,12 +39,19 @@ getLoc() async{
 
   _currentPosition = await location.getLocation();
 }
-
-
-class addSalon extends StatelessWidget{
+class addSalon extends StatefulWidget{
   final String email;
   String Id;
   addSalon(this.email);
+
+  AddSalon createState()=> AddSalon(this.email);
+
+}
+
+class AddSalon extends State<addSalon>{
+  final String email;
+  String Id;
+  AddSalon(this.email);
 
   double long;
   double lat;
@@ -48,6 +60,36 @@ class addSalon extends StatelessWidget{
   TextEditingController address = TextEditingController();
   TextEditingController latitude = TextEditingController();
   TextEditingController longitude = TextEditingController();
+
+  double _height;
+  double _width;
+
+  double dw, dh;
+  String _setTime;
+
+  String _hour, _minute, _time,_chour, _cminute, _ctime;
+
+  String dateTime;
+
+  TimeOfDay opening = TimeOfDay(hour: 00, minute: 00);
+  TimeOfDay closing = TimeOfDay(hour: 00, minute: 00);
+
+  TextEditingController _dateController = TextEditingController();
+  TextEditingController openingtimeController = TextEditingController();
+  TextEditingController closingtimeController = TextEditingController();
+
+  @override
+  void initState() {
+
+
+    openingtimeController.text = formatDate(
+        DateTime(2021, 4, 14, 10, 00),
+        [hh, ':', nn, " ", am]).toString();
+    closingtimeController.text = formatDate(
+        DateTime(2021, 4, 14, 10, 00),
+        [hh, ':', nn, " ", am]).toString();
+    super.initState();
+  }
 
 
   CollectionReference salonRef = firestoreInstance.collection("Salon");
@@ -64,10 +106,39 @@ class addSalon extends StatelessWidget{
         {//'name': name.text,
           'address': address.text,
           'location': [double.parse(longitude.text), double.parse(latitude.text)],
-          'owner': email});
+          'owner': email,
+          //'opening': new DateTime(2021,4,24,opening.hour, opening.minute),
+          /*'closing': new DateTime(2021,4,24,closing.hour, closing.minute) */   });
     print("ADDED To Elastic Search "+ r1.toString());
 
   }
+  Future<Null> _selectOpeningTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: opening,
+    );
+    if (picked != null)
+      setState(() {
+        opening = picked;
+        _hour = opening.hour.toString();
+        _minute = opening.minute.toString();
+        _time = _hour + ' : ' + _minute;
+        openingtimeController.text = _time;
+      });}
+
+  Future<Null> _selectClosingTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: closing,
+    );
+    if (picked != null)
+      setState(() {
+        closing = picked;
+        _chour = closing.hour.toString();
+        _cminute = closing.minute.toString();
+        _ctime = _chour + ' : ' + _cminute;
+        closingtimeController.text = _ctime;
+      });}
 
 
 
@@ -85,7 +156,9 @@ class addSalon extends StatelessWidget{
               //'name': name.text,
               'address': address.text,
               'location': GeoPoint(double.parse(latitude.text), double.parse(longitude.text)),
-              'owner': email
+              'owner': email,
+              'opening': new DateTime(2021,4,24,opening.hour, opening.minute),
+              'closing': new DateTime(2021,4,24,closing.hour, closing.minute)
 
             });
 
@@ -142,6 +215,96 @@ class addSalon extends StatelessWidget{
 
 
               },
+            ),
+          ),
+          Container(
+            width: _width,
+            height: _height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Text(
+                      'Choose Opening Time',
+                      style: TextStyle(
+                          fontStyle: FontStyle.normal,
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.0),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        _selectOpeningTime(context);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 10),
+                        width: 250,
+                        height: 32,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(color: Colors.grey[200]),
+                        child: TextFormField(
+                          style: TextStyle(fontSize: 25),
+                          textAlign: TextAlign.center,
+                          onSaved: (String val) {
+                            _setTime = val;
+                          },
+                          enabled: false,
+                          keyboardType: TextInputType.text,
+                          controller: openingtimeController,
+                          decoration: InputDecoration(
+                              disabledBorder:
+                              UnderlineInputBorder(borderSide: BorderSide.none),
+                              // labelText: 'Time',
+                              contentPadding: EdgeInsets.only(top:1, bottom:13)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Text(
+                      'Choose Closing Time',
+                      style: TextStyle(
+                          fontStyle: FontStyle.normal,
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.0),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        _selectClosingTime(context);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 10),
+                        width: 250,
+                        height: 32,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(color: Colors.grey[200]),
+                        child: TextFormField(
+                          style: TextStyle(fontSize: 25),
+                          textAlign: TextAlign.center,
+                          onSaved: (String val) {
+                            _setTime = val;
+                          },
+                          enabled: false,
+                          keyboardType: TextInputType.text,
+                          controller: closingtimeController,
+                          decoration: InputDecoration(
+                              disabledBorder:
+                              UnderlineInputBorder(borderSide: BorderSide.none),
+                              // labelText: 'Time',
+                              contentPadding: EdgeInsets.only(top:1, bottom:13)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

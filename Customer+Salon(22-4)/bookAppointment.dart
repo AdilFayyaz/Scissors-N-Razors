@@ -3,6 +3,7 @@ import 'ManageServices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +34,109 @@ class BookAppointment extends State<bookAppointment> {
   final salonname;
   final email;
   BookAppointment(this.cart,this.salonname, this.email);
+
+  double _height;
+  double _width;
+
+  double dw, dh;
+  String _setTime;
+
+  String _hour, _minute, _time;
+
+  String dateTime;
+
+  TimeOfDay time = TimeOfDay(hour: 00, minute: 00);
+
+  TextEditingController timeController = TextEditingController();
+
+  compareTime(BuildContext context) async {
+    BuildContext c=context;
+    var result=await firestoreInstance.collection("Salon").doc(salonname).get();
+    Timestamp ot=result.data()["opening"];
+    Timestamp ct=result.data()["closing"];
+
+    DateTime od=ot.toDate();
+    DateTime cd=ct.toDate();
+    print(od);
+    if (time.hour < od.hour || (time.hour==od.hour && time.minute < od.minute))
+    {
+      print("early");
+      setState(() {
+        _showDialog(c, "Salon does not open by this time! Choose another time.");
+      });
+
+    }
+    else if (time.hour > cd.hour || (time.hour==cd.hour && time.minute > cd.minute))
+    {
+      setState(() {
+        _showDialog(c, "Salon closes by this time! Choose another time.");
+      });
+
+      print("late");
+    }
+    else
+    {
+      CollectionReference aptRef = firestoreInstance.collection("Appointments");
+      List<String> items=[];
+      int price=0;
+      for (int i=0; i<cart.length; i++){
+        items.add(cart[i]['Service']);
+        price+=int.parse(cart[i]['Price']);
+      }
+
+
+      final docRef= aptRef.add({
+        //'name': name.text,
+        'date': _today2,
+        'customer': email,
+        'services': items,
+        'total': price,
+        'salon': salonname,
+        'time': new DateTime(2021,4,24,time.hour, time.minute)
+      });
+    }
+
+
+  }
+  Future<Null> _selectTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: time,
+    );
+    if (picked != null)
+      setState(() {
+        time = picked;
+        _hour = time.hour.toString();
+        _minute = time.minute.toString();
+        _time = _hour + ' : ' + _minute;
+        timeController.text = _time;
+      });}
+
+  void _showDialog(BuildContext context, String msg) {
+
+    print("in dialog");
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Oops!"),
+          content: new Text("Wrong Time"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+
+          ],
+        );
+      },
+    );
+  }
 
   getEvents() async {
     var result= await firestoreInstance.collection("Appointments").where("customer", isEqualTo: this.email).get();
@@ -202,28 +306,63 @@ class BookAppointment extends State<bookAppointment> {
                 child: _calendarCarouselNoHeader,
               ),
               Container(
+                width: _width,
+                height: _height,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          'Choose Time',
+                          style: TextStyle(
+                              fontStyle: FontStyle.normal,
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.0),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _selectTime(context);
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 10, bottom: 10),
+                            width: 250,
+                            height: 32,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(color: Colors.grey[200]),
+                            child: TextFormField(
+                              style: TextStyle(fontSize: 25),
+                              textAlign: TextAlign.center,
+                              onSaved: (String val) {
+                                _setTime = val;
+                              },
+                              enabled: false,
+                              keyboardType: TextInputType.text,
+                              controller: timeController,
+                              decoration: InputDecoration(
+                                  disabledBorder:
+                                  UnderlineInputBorder(borderSide: BorderSide.none),
+                                  // labelText: 'Time',
+                                  contentPadding: EdgeInsets.only(top:1, bottom:13)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
                 margin: EdgeInsets.all(25),
                 child: FlatButton(
                   child: Text('Book', style: TextStyle(fontSize: 20.0),),
                   color: Colors.deepPurpleAccent,
                   textColor: Colors.white,
                   onPressed: () {
-                    CollectionReference aptRef = firestoreInstance.collection("Appointments");
-                    List<String> items=[];
-                    int price=0;
-                    for (int i=0; i<cart.length; i++){
-                      items.add(cart[i]['Service']);
-                      price+=int.parse(cart[i]['Price']);
-                    }
-
-
-                    final docRef= aptRef.add({
-                      //'name': name.text,
-                      'date': _today2,
-                      'customer': email,
-                      'services': items,
-                      'total': price
-                    }).whenComplete(() => Navigator.pop(context));
+                    compareTime(context).whenComplete(() => Navigator.pop(context));
                     //should next generate invoice
                   },
                 ),

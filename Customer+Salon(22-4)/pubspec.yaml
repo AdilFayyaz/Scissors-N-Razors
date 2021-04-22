@@ -32,6 +32,8 @@ dependencies:
   cloud_firestore: ^1.0.4
   firebase_core: ^1.0.3
   location: ^4.1.1
+  date_time_picker: ^2.0.0
+  date_format: ^2.0.2
   simple_search_bar: ^0.1.7
   flutter_calendar_carousel: ^1.5.2
 dev_dependencies:
