@@ -85,14 +85,15 @@ class BookAppointment extends State<bookAppointment> {
       }
 
 
+
       final docRef= aptRef.add({
         //'name': name.text,
-        'date': _today2,
+        'datetime': new DateTime(_today2.year, _today2.month, _today2.day, time.hour, time.minute),
         'customer': email,
         'services': items,
         'total': price,
         'salon': salonname,
-        'time': new DateTime(2021,4,24,time.hour, time.minute)
+
       });
     }
 
