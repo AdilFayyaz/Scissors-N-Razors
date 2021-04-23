@@ -1,3 +1,5 @@
+import 'package:flutter/rendering.dart';
+
 import 'ManageSalon.dart';
 import 'addSalon.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'viewSalon.dart';
 import 'package:simple_search_bar/simple_search_bar.dart';
 import 'customerNavBar.dart';
 
+
 final firestoreInstance = FirebaseFirestore.instance;
 List<String> SalonNames = [];
 Future<int> getSalonNames() async {
@@ -21,20 +24,21 @@ Future<int> getSalonNames() async {
 
 }
 CollectionReference _collectionRef = FirebaseFirestore.instance.collection("Salon");
-Future<List<String>> getData() async {
-  // Get docs from collection reference
-  QuerySnapshot querySnapshot = await _collectionRef.get();
-
-  // Get data from docs and convert map to List
-  final allData = querySnapshot.docs.map((doc) => doc.id).toList();
-
-  print(allData);
-  return allData;
-}
-class customerDashboard extends StatelessWidget {
-  var x =getSalonNames();
-  final email;
+class customerDashboard extends StatefulWidget{
+  final String email;
   customerDashboard(this.email);
+  @override
+  _customerDashboard createState() => _customerDashboard(this.email);
+}
+class _customerDashboard extends State<customerDashboard> {
+  @override
+  void initState(){
+    super.initState();
+    var x = getSalonNames();
+  }
+  //var x =getSalonNames();
+  final String email;
+  _customerDashboard(this.email);
   String salonname;
   TextEditingController name = TextEditingController();
 
@@ -50,7 +54,7 @@ List<String> list_names = [];
       appBar:
 
       SearchAppBar(
-        primary: Colors.deepPurple[400],
+        primary: Colors.pink[400],
         appBarController: appBarController,
         // You could load the bar with search already active
         autoSelected: false,
@@ -62,7 +66,7 @@ List<String> list_names = [];
         },
         //Will show when SEARCH MODE wasn't active
         mainAppBar: AppBar(
-          backgroundColor: Colors.deepPurple[500],
+          backgroundColor: Colors.redAccent[700],
           title: Text("Search Nearby Salons"),
           actions: <Widget>[
             InkWell(
@@ -80,10 +84,28 @@ List<String> list_names = [];
       ),
         body:
 
+
         Column(
+
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            width: 400,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.redAccent[700],
+              width: 2),
+                borderRadius: BorderRadius.circular(10),
+                //color: Colors.yellow[800],
 
+            ),
+            child: Text(
+              'Welcome Back to Scissors N Razors',
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+
+            ),
         Expanded(
 
           child: ListView.builder(
@@ -91,12 +113,11 @@ List<String> list_names = [];
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemCount: SalonNames.length,
-            padding: EdgeInsets.symmetric(vertical: 30.0),
+            padding: EdgeInsets.symmetric(vertical: 25.0),
             itemBuilder: (BuildContext context, int index) =>
             Container(
               //minWeight: 1000, // Height not changing :((
               width: 200,
-
                 child:Card(
                   //child: Center(child: Text(SalonNames[index])),
 
@@ -105,12 +126,30 @@ List<String> list_names = [];
                       onTap: () {
                         Navigator.push(context,MaterialPageRoute(builder: (_)=>viewSalon(SalonNames[index], this.email)));
                       },
-                      child: Center(child: Text(SalonNames[index])) ,
+                      child: //Center(child: Text(SalonNames[index])) ,
+                      Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/menuNavBar3.jpeg"),
+                            fit: BoxFit.fill,
+                            alignment: Alignment.topCenter,
+                          ),
+                        ),
+                        child: new Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                             new Text(SalonNames[index],
+                                 style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.8))//Text(SalonNames[index]),
+                        ],
+                      ),)
                     ),
 
                   semanticContainer: true,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: Colors.deepPurple[100],
+
+                  color: Colors.pink[100],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     side: BorderSide(
@@ -124,25 +163,126 @@ List<String> list_names = [];
             ),
           ),
         ),
-        Text(
-          'Favorites etc info here',
-          style: TextStyle(fontSize: 18),
-        ),
+
         Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemBuilder: (ctx,int){
-              return Card(
-                child: ListTile(
-                    title: Text('Random Stuff $int'),
-                    subtitle: Text('this is a description ')),
-              );
-            },
+          child:
+          Container(
+          child: Padding(
+            padding: const EdgeInsets.all(0.0),
+              child: Card(
+
+
+                  child: InkWell(
+                      splashColor: Colors.deepPurple[300],
+                      onTap: () {
+                       // Navigator.push(context,MaterialPageRoute(builder: (_)=>viewSalon(SalonNames[index], this.email)));
+                      },
+                      child: //Center(child: Text(SalonNames[index])) ,
+                      Container(
+
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/ViewAppts.jpg"),
+                            fit: BoxFit.fill,
+                            alignment: Alignment.topCenter,
+                          ),
+                        ),
+                        child: new Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Text("View Appointments",
+                                style: TextStyle(
+                                color: Colors.grey[800],
+                                //fontWeight: FontWeight.bold,
+                                fontSize: 30)),
+
+                          ],
+                        ),)
+                  ),
+
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+
+                  color: Colors.yellow[700],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(
+                      color: Colors.grey.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  elevation: 10,
+                  margin: EdgeInsets.all(15)
+              ),
+              ),
+            ),
           ),
-        ),
+          Expanded(
+            child: ListView.builder(
+
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: 2,
+              padding: EdgeInsets.symmetric(vertical: 0.0),
+              itemBuilder: (BuildContext context, int index) =>
+                  Container(
+                    //minWeight: 1000, // Height not changing :((
+                    width: 200,
+                    child:Card(
+                      //child: Center(child: Text(SalonNames[index])),
+
+                      child: InkWell(
+                          splashColor: Colors.deepPurple[50],
+                          onTap: () {
+                           // Navigator.push(context,MaterialPageRoute(builder: (_)=>viewSalon(SalonNames[index], this.email)));
+                          },
+                          child: //Center(child: Text(SalonNames[index])) ,
+                          Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("assets/images/feedback.png"),
+                                fit: BoxFit.fill,
+                                alignment: Alignment.topCenter,
+                              ),
+                            ),
+                            child: new Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                if (index == 0)
+                                  new Text("Feedback",
+                                      style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.8))
+                                else
+                                  new Text("Deals",
+                                      style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.8))
+                              ],
+                            ),)
+                      ),
+
+                      semanticContainer: true,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+
+                      color: Colors.pink[100],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side: BorderSide(
+                          color: Colors.grey.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      elevation: 10,
+                      margin: EdgeInsets.all(15),
+                    ),
+                  ),
+            ),
+
+          ),
       ],
     ),
-    );
+      );
   }
 
 
@@ -157,22 +297,3 @@ List<String> list_names = [];
   }
 }
 
-// Future<List<DocumentSnapshot>> getProduceID() async{
-//   var data = await Firestore.instance.collection('users').document(widget.userId).collection('Products').getDocuments();
-//   var productId = data.documents;
-//   return productId;
-// }
-
-// var products;
-// getProduceID().then((data){
-// for(int i = 0; i < s.length; i++) {
-// products = Firestore.instance.collection('products')
-//     .document(data[i]['productID'])
-//     .snapshots();
-// if (products != null) {
-// products.forEach((product) {
-// print(product.data.values);
-// });
-// }
-// }
-// });
