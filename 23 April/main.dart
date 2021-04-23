@@ -319,6 +319,8 @@ class LoginPageState extends State<LoginPage>
       parent: _iconAnimationController,
       curve: Curves.bounceInOut,
     );
+    email.text="";
+    password.text="";
     _iconAnimation.addListener(() => this.setState(() {}));
     _iconAnimationController.forward();
   }

@@ -58,6 +58,13 @@ flutter:
     - assets/03.jpg
     - assets/logo3-8.png
     - assets/google.jpg
+    - assets/menuNavBar.png
+    - assets/menuNavBar2.png
+    - assets/menuNavBar3.jpeg
+    - assets/menuNavBar4.png
+    - assets/ApptPlaceHolder.png
+    - assets/ViewAppts.jpg
+    - assets/feedback.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
