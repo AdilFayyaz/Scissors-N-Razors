@@ -13,6 +13,7 @@ import 'alertDialog.dart';
 import 'createEmployee.dart';
 
 TextEditingController name = TextEditingController();
+
 bool valid=true;
 bool belongs=true;
 String message="";
@@ -91,7 +92,6 @@ class ManageSalon extends State<manageSalon> {
   final String email;
   ManageSalon(this.email);
 
-  TextEditingController name = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -188,6 +188,8 @@ class ManageSalon extends State<manageSalon> {
                         children: <Widget>[
                           Expanded(child: RaisedButton(
                               onPressed: () async {
+                                valid = true;
+                                belongs = true;
 
                                 var xyz= await checkSalon(email, name.text); //this checks if salon exists
 
@@ -195,7 +197,7 @@ class ManageSalon extends State<manageSalon> {
 
                                   var abc= await checkEmail(email, name.text);
                                   if (belongs) {
-                                    setState(() {
+                                      setState(() {
                                       // get list of emp names, and passwords
                                       getEmployeeNames();
                                     });
@@ -215,14 +217,17 @@ class ManageSalon extends State<manageSalon> {
                           Expanded(
                               child: RaisedButton(
                                   onPressed: () async {
-
+                                    valid = true;
+                                    belongs = true;
                                     var xyz= await checkSalon(email, name.text); //this checks if salon exists
                                     //need to add check that it also belongs to the user
                                     if (valid) {
-
                                       var abc= await checkEmail(email, name.text);
                                       if (belongs) {
-                                       //Do Nothing
+                                        setState(() {
+                                          // get list of emps and their passwords
+                                          getEmployeeNames();
+                                        });
                                       }
                                       else
                                         _showDialog(context, message);
@@ -276,7 +281,8 @@ class ManageSalon extends State<manageSalon> {
                           'Add New Employee'
                         ),
                           onTap: () async {
-
+                            valid = true;
+                            belongs = true;
                             var xyz= await checkSalon(email, name.text); //this checks if salon exists
                             //need to add check that it also belongs to the user
                             if (valid) {
@@ -329,6 +335,7 @@ class ManageSalon extends State<manageSalon> {
                                     String username = EmployeeNames[index];
                                     var emp = username.split(',');
                                     username = emp[0].replaceAll(' ', '');
+                                    // Delete an Employee from the collection
                                     final docRef = salonEmp.doc(username).delete().whenComplete(() => setState(() {
                                       getEmployeeNames();
                                     })
