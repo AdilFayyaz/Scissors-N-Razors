@@ -67,7 +67,14 @@ class _EmpBarChartGraphState extends State<EmpBarChartGraph> {
                   ),
                 ],
               ),
-              Expanded( child: charts.BarChart(series, animate: true)),
+              Expanded( child: charts.BarChart(
+                series,
+                animate: true,
+                domainAxis: charts.OrdinalAxisSpec(
+                  renderSpec: charts.SmallTickRendererSpec(labelRotation: 60),
+                ),
+              )
+              ),
             ],
           ),
         );

@@ -23,6 +23,7 @@ class viewCustomerAppointments extends StatefulWidget {
     void initState() {
       Appointments.clear();
       Allappointments.clear();
+      ApptIDs.clear();
       getAllCustomerAppointments(email);
       super.initState();
     }
@@ -41,8 +42,9 @@ class viewCustomerAppointments extends StatefulWidget {
         if (Appointments.isEmpty) {
           for (int i = 0; i < Allappointments.length; i++) {
             String id = Allappointments[i].split(" ")[0].toString();
-            ApptIDs.add(id);
+
             if (Allappointments[i].split(" ")[2].toString() == custEmail) {
+              ApptIDs.add(id);
               Appointments.add(Allappointments[i]);
             }
           }
