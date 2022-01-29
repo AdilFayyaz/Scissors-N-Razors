@@ -12,3 +12,13 @@ A Flutter based application that allows Customers to book appointments at Salons
 1. In the app\build.gradle file write- apply plugin: 'com.google.gms.google-services'   at the end of the file
 2. In the android\build.gradle file write- classpath 'com.google.gms:google-services:4.3.5' in the dependencies block
 3. Add the following dependencies in the pubspec.yaml file: cloud_firestore: ^1.0.4 and firebase_core: ^1.0.3
+
+
+### Functionality
+1. Sign In
+2. Customer Dashboard
+3. Add to Cart
+4. Salon Owner Dashboard
+5. Manage Salon Services and Employees Screen
+6. View Annual and Monthly Income Charts Screen
+7. Employee Dashboard
